@@ -1126,13 +1126,13 @@
             </tbody>
           </table>
 
-          <div class="code"><button class="btn ghost copy" type="button">复制</button>curl -X POST "http://&lt;span class="js-host"&gt;&lt;/span&gt;/translate?api-version=3.0&amp;to=zh-Hans" \
+          <div class="code"><button class="btn ghost copy" type="button">复制</button>curl -X POST "http://<span class="js-host"></span>/translate?api-version=3.0&amp;to=zh-Hans" \
   -H "Ocp-Apim-Subscription-Key: YOUR_GATEWAY_KEY" \
   -H "Content-Type: application/json" \
   -d '[{ "Text": "Hello, world!" }]'</div>
 
           <div class="code"><button class="btn ghost copy" type="button">复制</button>// Node.js（多目标语言：一次请求译出中 + 日）
-const resp = await fetch("http://&lt;span class="js-host"&gt;&lt;/span&gt;/translate?api-version=3.0&amp;to=zh-Hans&amp;to=ja", {
+const resp = await fetch("http://<span class="js-host"></span>/translate?api-version=3.0&amp;to=zh-Hans&amp;to=ja", {
   method: "POST",
   headers: { "Ocp-Apim-Subscription-Key": "YOUR_GATEWAY_KEY", "Content-Type": "application/json" },
   body: JSON.stringify([{ Text: "Hello, world!" }]),
@@ -1156,7 +1156,7 @@ const data = await resp.json();</div>
         <div class="card doc-block">
           <h3><span class="method get">GET</span>/usage — 当月用量</h3>
           <p class="lead2">查询当月各服务商消耗与剩余额度（同一网关密钥鉴权）。</p>
-          <div class="code"><button class="btn ghost copy" type="button">复制</button>curl "http://&lt;span class="js-host"&gt;&lt;/span&gt;/usage" -H "Ocp-Apim-Subscription-Key: YOUR_GATEWAY_KEY"
+          <div class="code"><button class="btn ghost copy" type="button">复制</button>curl "http://<span class="js-host"></span>/usage" -H "Ocp-Apim-Subscription-Key: YOUR_GATEWAY_KEY"
 
 // 响应（200）
 {
@@ -1241,7 +1241,7 @@ const data = await resp.json();</div>
                 <tr><td>强制上游</td><td><code>?provider=接入名</code>（如 <code>baidu</code> 或多 Key 实例名 <code>baidu-2</code>）</td></tr>
               </tbody>
             </table>
-            <div class="code"><button class="btn ghost copy" type="button">复制</button>curl -X POST "http://&lt;span class="js-host"&gt;&lt;/span&gt;/azure/translate?api-version=3.0&amp;to=zh-Hans" \
+            <div class="code"><button class="btn ghost copy" type="button">复制</button>curl -X POST "http://<span class="js-host"></span>/azure/translate?api-version=3.0&amp;to=zh-Hans" \
   -H "Ocp-Apim-Subscription-Key: YOUR_GATEWAY_KEY" \
   -H "Content-Type: application/json" \
   -d '[{ "Text": "Hello, world!" }]'
@@ -1277,7 +1277,7 @@ const data = await resp.json();</div>
                 <tr><td><code>salt</code> / <code>sign</code></td><td><span class="req">必填</span></td><td>随机数与 MD5 签名</td></tr>
               </tbody>
             </table>
-            <div class="code"><button class="btn ghost copy" type="button">复制</button>curl -X POST "http://&lt;span class="js-host"&gt;&lt;/span&gt;/baidu/api/trans/vip/translate" \
+            <div class="code"><button class="btn ghost copy" type="button">复制</button>curl -X POST "http://<span class="js-host"></span>/baidu/api/trans/vip/translate" \
   --data-urlencode "q=Hello, world!" \
   -d "from=en&amp;to=zh&amp;appid=gateway&amp;salt=1435660288" \
   -d "sign=$(echo -n "gatewayHello, world!1435660288YOUR_GATEWAY_KEY" | md5sum | cut -d' ' -f1)"
