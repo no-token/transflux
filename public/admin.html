@@ -525,12 +525,13 @@
     border-radius: var(--r-sm); padding: 10px 12px; font-size: 13px; margin-bottom: 18px;
   }
   .auth-logo { margin-bottom: 18px; }
-  /* 启动防闪屏：存在本地会话时，验证完成前隐藏登录/主视图，避免登录页闪一下再跳后台 */
+  /* 启动防闪屏：存在本地会话时，验证完成前隐藏登录/主视图，避免登录页闪一下再跳后台
+     .booting 可能挂在 <html>（head 内联脚本同步加，首帧即生效）或 <body>（initSession 加） */
   #bootSplash{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:var(--bg)}
   #bootSplash .dot{width:26px;height:26px;border-radius:50%;border:3px solid rgba(128,140,170,.3);border-top-color:#7aa2f7;animation:bootspin .8s linear infinite}
   @keyframes bootspin{to{transform:rotate(360deg)}}
-  body.booting #bootSplash{display:flex}
-  body.booting #loginView, body.booting #mainView, body.booting #pwView{display:none !important}
+  .booting #bootSplash{display:flex}
+  .booting #loginView, .booting #mainView, .booting #pwView{display:none !important}
   .auth-foot {
     margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--border);
     font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center;
@@ -794,10 +795,14 @@
   @media (max-width: 560px) {
     .wrap { padding: 18px 14px 40px; }
     .appbar-in { padding: 12px 14px 0; }
+    .appbar-in button { white-space: nowrap; }   /* 顶栏按钮禁止逐字竖排折行 */
     .tabs { padding: 4px 14px 0; }
     .kpi-row { grid-template-columns: 1fr 1fr; }
     .grid { grid-template-columns: 1fr; }
     .field-grid { grid-template-columns: 1fr; }
+    /* 接口文档：渠道条目整行铺齐（图标 | 名称+端点 | 开关 右对齐），不再按内容宽度挤成碎块 */
+    .doc-side { padding: 8px 6px; gap: 3px; }
+    .side-item { width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
@@ -814,6 +819,8 @@
       document.documentElement.classList.add('sl-theme-dark');
     }
   } catch (e) { document.documentElement.dataset.theme = 'light'; }
+  /* 首帧防登录闪动：本地有会话标记时立刻盖启动屏（主脚本 initSession 稍后完成验证） */
+  try { if (localStorage.getItem('tg_token')) document.documentElement.classList.add('booting'); } catch (e) {}
 </script>
 </head>
 <body>
@@ -3277,6 +3284,7 @@ function logout(){
     await afterLogin();
   } catch (e) { logout(); }
   document.body.classList.remove('booting');
+  document.documentElement.classList.remove('booting');
 })();
 </script>
 </body>
