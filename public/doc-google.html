@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Google 渠道 · Transflux接口文档</title>
+<style>
+  :root {
+    --brand: #4285F4; --brand-soft: #e9f0fe;
+    --text: #1f2430; --muted: #6b7280; --border: #e5e8ef;
+    --bg: #f6f8fb; --card: #ffffff; --code-bg: #101426; --code-tx: #dbe4f5;
+    --ok: #0a8a4a; --bad: #c23b3b; --mono: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; font-size: 14.5px; line-height: 1.7; }
+  .page { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
+  .hero { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .logo { width: 42px; height: 42px; border-radius: 10px; background: var(--brand); display: flex; align-items: center; justify-content: center; flex: none; color: #fff; font-weight: 700; font-size: 18px; }
+  h1 { font-size: 21px; margin: 0; }
+  .tagline { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .pill { display: inline-block; font-size: 11.5px; font-weight: 600; color: var(--brand); background: var(--brand-soft);
+    border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent); padding: 2px 10px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
+  .meta { color: var(--muted); font-size: 12.5px; margin: 14px 0 26px; padding: 10px 14px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; }
+  .meta code { font-family: var(--mono); font-size: 12px; }
+  section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px 16px; margin-bottom: 16px; }
+  h2 { font-size: 15.5px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  .m { font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: .5px; }
+  .m.post { background: #e3f4ea; color: var(--ok); }
+  .m.get  { background: var(--brand-soft); color: var(--brand); }
+  p.desc { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .ep { font-family: var(--mono); font-size: 12.5px; background: var(--brand-soft); border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+    border-radius: 8px; padding: 9px 12px; word-break: break-all; color: #2a56a8; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+  th { text-align: left; color: var(--muted); font-size: 12px; font-weight: 600; padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 7px 10px; border-bottom: 1px solid #f0f2f6; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  code { font-family: var(--mono); font-size: 12px; background: #f1f3f8; border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+  .req { color: var(--bad); font-size: 11px; font-weight: 600; }
+  .opt { color: var(--muted); font-size: 11px; }
+  pre { position: relative; background: var(--code-bg); color: var(--code-tx); font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+    border-radius: 10px; padding: 14px 16px; overflow-x: auto; white-space: pre; margin: 12px 0 0; }
+  pre .c { color: #7d8db8; }
+  .copy { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 4px 10px; border-radius: 7px; cursor: pointer;
+    background: rgba(255,255,255,.12); color: #d5ddf2; border: 1px solid rgba(255,255,255,.18); }
+  .copy:hover { background: rgba(255,255,255,.22); }
+  .note { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .note b { color: var(--text); }
+  ol.steps { margin: 8px 0 0; padding-left: 20px; font-size: 13px; }
+  ol.steps li { margin: 4px 0; }
+  footer { text-align: center; color: #9aa3b0; font-size: 12px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="logo">G</div>
+    <div>
+      <h1>Transflux · Google 渠道<span class="pill">translate_a/single 兼容</span></h1>
+      <div class="tagline">与 Google 网页翻译接口同构，沉浸式翻译「谷歌翻译」服务可直接换地址接入</div>
+    </div>
+  </div>
+
+  <div class="meta">
+    本服务 Base URL：<code class="base-url">https://your-gateway.example.com</code>（即当前页面的访问地址）<br />
+    鉴权：URL 追加 <code>&amp;token=&lt;网关对外 AUTH_KEY&gt;</code>，或请求头 <code>Authorization: Bearer &lt;网关密钥&gt;</code>
+  </div>
+
+  <section>
+    <h2><span class="m get">SETUP</span>沉浸式翻译配置方法</h2>
+    <ol class="steps">
+      <li>打开沉浸式翻译「设置」→「开发者设置」；</li>
+      <li>在「编辑用户配置（User Config）」的 <code>translationServices</code> 中加入（或直接在翻译服务 → 谷歌翻译的「接口地址 / API 地址」字段填写）：<br />
+        <code>"google": { "apiUrl": "https://你的域名/google/translate_a/single?token=你的网关密钥" }</code><br />
+        客户端会自动带上 <code>client=gtx&amp;sl=&amp;tl=&amp;q=</code> 等参数，网关只替换地址；</li>
+      <li>保存后切换网页翻译服务为「谷歌翻译」即可。</li>
+    </ol>
+    <p class="note"><b>版本兼容：</b>沉浸式翻译并非所有版本/所有服务都开放「接口地址」自定义（如百度翻译服务不支持）。若你的版本在谷歌翻译设置或开发者配置里找不到接口地址字段，请改用<b>「自定义 API」渠道</b>（<code>/imme</code>），翻译效果等同。</p>
+  </section>
+
+  <section>
+    <h2><span class="m get">GET</span>/google/translate_a/single — 网页翻译</h2>
+    <div class="ep base-ep">GET {base}/google/translate_a/single?client=gtx&amp;sl=auto&amp;tl=zh-CN&amp;q=Hello</div>
+    <p class="desc">同时支持 <code>GET</code> 与 <code>POST</code>（query / JSON / form）。<code>q</code> 可重复传多段，段内可用 <code>\n</code> 分行；响应与输入行一一对应。<code>client</code>、<code>dt</code> 等参数忽略。</p>
+    <table>
+      <thead><tr><th>参数</th><th>必填</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>q</code></td><td><span class="req">必填</span></td><td>翻译文本；可重复传多段，总长 ≤ 10000 字符</td></tr>
+        <tr><td><code>tl</code></td><td><span class="req">必填</span></td><td>目标语言（Google 代码：<code>zh-CN</code> / <code>zh-TW</code> / <code>en</code> / <code>ja</code> …）</td></tr>
+        <tr><td><code>sl</code></td><td><span class="opt">可选</span></td><td>源语言，<code>auto</code> 或省略为自动检测</td></tr>
+        <tr><td><code>token</code></td><td><span class="req">必填</span></td><td>网关对外 AUTH_KEY（或用 Bearer 头传递）</td></tr>
+      </tbody>
+    </table>
+
+    <pre><span class="c"># curl 示例</span>
+curl "<span class="base-url-inline">https://your-gateway.example.com</span>/google/translate_a/single?client=gtx&amp;sl=auto&amp;tl=zh-CN&amp;q=Hello,%20world!&amp;token=YOUR_GATEWAY_KEY"<button class="copy" type="button">复制</button></pre>
+
+    <pre><span class="c">// 成功响应（200）— 与 Google translate_a/single 结构一致</span>
+[
+  [
+    [ "你好，世界！", "Hello, world!", null, null ]
+  ],
+  null,
+  "en"
+]<button class="copy" type="button">复制</button></pre>
+    <p class="note"><b>说明：</b><code>data[0]</code> 为 [译文, 原文, null, null] 数组，与 <code>q</code> 内的文本行一一对应；<code>data[2]</code> 为检测到的源语言。实际翻译由网关按优先级 + 额度在多家上游中自动路由。</p>
+  </section>
+
+  <section>
+    <h2>错误格式</h2>
+    <table>
+      <thead><tr><th>HTTP</th><th>body</th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td>400</td><td><code>{ "error": "Missing required params: tl and q" }</code></td><td>缺 tl / q 或 q 为空、超长</td></tr>
+        <tr><td>401</td><td><code>{ "error": { "code": "unauthorized" } }</code></td><td>token 缺失或错误</td></tr>
+        <tr><td>503</td><td><code>{ "error": "Translation failed, please retry" }</code></td><td>上游全部失败，请重试</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>常用语言代码</h2>
+    <table>
+      <thead><tr><th>语言</th><th>代码</th><th>语言</th><th>代码</th></tr></thead>
+      <tbody>
+        <tr><td>自动检测（仅源语言）</td><td>auto</td><td>中文（简体）</td><td>zh / zh-Hans</td></tr>
+        <tr><td>英语</td><td>en</td><td>中文（繁体）</td><td>zh-tw / zh-Hant</td></tr>
+        <tr><td>日语</td><td>ja / jp</td><td>粤语</td><td>yue</td></tr>
+        <tr><td>韩语</td><td>ko / kor</td><td>文言文</td><td>wyw</td></tr>
+        <tr><td>法语</td><td>fr / fra</td><td>德语</td><td>de</td></tr>
+        <tr><td>西班牙语</td><td>es / spa</td><td>俄语</td><td>ru</td></tr>
+        <tr><td>葡萄牙语</td><td>pt</td><td>意大利语</td><td>it</td></tr>
+        <tr><td>泰语</td><td>th</td><td>越南语</td><td>vi / vie</td></tr>
+        <tr><td>阿拉伯语</td><td>ar / ara</td><td>印尼语</td><td>id</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><b>方言码自动映射：</b>同一语言的多种写法（如 <code>zh</code> / <code>zh-Hans</code>、<code>ja</code> / <code>jp</code>）均可使用（Google 风格地区码 <code>zh-CN</code> / <code>zh-TW</code> 也兼容），网关自动转换为上游厂商的代码规范——简体中文→Azure <code>zh-Hans</code> / DeepL <code>ZH</code> / 百度 <code>zh</code>；繁体中文→Azure <code>zh-Hant</code> / DeepL <code>ZH-TW</code> / 百度 <code>cht</code>。业务侧统一使用上表即可。<b>注意：</b>DeepL 上游不支持粤语（yue）与文言文（wyw）。</p>
+  </section>
+
+  <footer>Transflux · Google 渠道文档 · 本页面由网关自动提供，管理员可在后台启用 / 禁用</footer>
+</div>
+
+<script>
+(function () {
+  var base = location.origin;
+  document.querySelectorAll('.base-url').forEach(function (el) { el.textContent = base; });
+  document.querySelectorAll('.base-url-inline').forEach(function (el) { el.textContent = base; });
+  document.querySelectorAll('.base-ep').forEach(function (el) {
+    el.textContent = el.textContent.replace('{base}', base);
+  });
+  document.querySelectorAll('pre').forEach(function (pre) {
+    pre.querySelectorAll('.copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var clone = pre.cloneNode(true);
+        clone.querySelectorAll('.copy').forEach(function (b) { b.remove(); });
+        var text = (clone.textContent || '').trim();
+        var done = function () { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+        } else { fallback(text, done); }
+      });
+    });
+  });
+  function fallback(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    ta.remove();
+  }
+})();
+</script>
+</body>
+</html>

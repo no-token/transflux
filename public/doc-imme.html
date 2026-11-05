@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>自定义 API 渠道（沉浸式翻译） · Transflux接口文档</title>
+<style>
+  :root {
+    --brand: #6a5cff; --brand-soft: #efedff;
+    --text: #1f2430; --muted: #6b7280; --border: #e5e8ef;
+    --bg: #f6f8fb; --card: #ffffff; --code-bg: #101426; --code-tx: #dbe4f5;
+    --ok: #0a8a4a; --bad: #c23b3b; --mono: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; font-size: 14.5px; line-height: 1.7; }
+  .page { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
+  .hero { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .logo { width: 42px; height: 42px; border-radius: 10px; background: var(--brand); display: flex; align-items: center; justify-content: center; flex: none; color: #fff; font-weight: 700; font-size: 18px; }
+  h1 { font-size: 21px; margin: 0; }
+  .tagline { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .pill { display: inline-block; font-size: 11.5px; font-weight: 600; color: var(--brand); background: var(--brand-soft);
+    border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent); padding: 2px 10px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
+  .meta { color: var(--muted); font-size: 12.5px; margin: 14px 0 26px; padding: 10px 14px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; }
+  .meta code { font-family: var(--mono); font-size: 12px; }
+  section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px 16px; margin-bottom: 16px; }
+  h2 { font-size: 15.5px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  .m { font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: .5px; }
+  .m.post { background: #e3f4ea; color: var(--ok); }
+  .m.get  { background: var(--brand-soft); color: var(--brand); }
+  p.desc { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .ep { font-family: var(--mono); font-size: 12.5px; background: var(--brand-soft); border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+    border-radius: 8px; padding: 9px 12px; word-break: break-all; color: #3a2f8f; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+  th { text-align: left; color: var(--muted); font-size: 12px; font-weight: 600; padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 7px 10px; border-bottom: 1px solid #f0f2f6; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  code { font-family: var(--mono); font-size: 12px; background: #f1f3f8; border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+  .req { color: var(--bad); font-size: 11px; font-weight: 600; }
+  .opt { color: var(--muted); font-size: 11px; }
+  pre { position: relative; background: var(--code-bg); color: var(--code-tx); font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+    border-radius: 10px; padding: 14px 16px; overflow-x: auto; white-space: pre; margin: 12px 0 0; }
+  pre .c { color: #7d8db8; }
+  .copy { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 4px 10px; border-radius: 7px; cursor: pointer;
+    background: rgba(255,255,255,.12); color: #d5ddf2; border: 1px solid rgba(255,255,255,.18); }
+  .copy:hover { background: rgba(255,255,255,.22); }
+  .note { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .note b { color: var(--text); }
+  ol.steps { margin: 8px 0 0; padding-left: 20px; font-size: 13px; }
+  ol.steps li { margin: 4px 0; }
+  footer { text-align: center; color: #9aa3b0; font-size: 12px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="logo">浸</div>
+    <div>
+      <h1>Transflux · 自定义 API 渠道<span class="pill">沉浸式翻译 ImmersiveL 协议</span></h1>
+      <div class="tagline">按沉浸式翻译官方「自定义接口翻译」协议实现，批量文本 + 占位符透传</div>
+    </div>
+  </div>
+
+  <div class="meta">
+    本服务 Base URL：<code class="base-url">https://your-gateway.example.com</code>（即当前页面的访问地址）<br />
+    鉴权：URL 追加 <code>?token=&lt;网关对外 AUTH_KEY&gt;</code>，或请求头 <code>Authorization: Bearer &lt;网关密钥&gt;</code>
+  </div>
+
+  <section>
+    <h2><span class="m get">SETUP</span>沉浸式翻译配置方法</h2>
+    <ol class="steps">
+      <li>打开沉浸式翻译「设置」→「开发者设置」，勾选开启 <b>「启用 Beta 测试特性」</b>。<br />
+        <span class="hint">「自定义 API」是 Beta 隐藏服务：<b>未开启 Beta 前，「添加自定义翻译服务」弹窗里看不到它</b>，这是官方设计而非缺失。</span></li>
+      <li>回到「翻译服务」→「添加自定义翻译服务」→ 列表中此时会出现 <b>「自定义 API」</b>；选中后在「API URL」填入：<br />
+        <code class="base-url-inline">https://your-gateway.example.com</code><code>/imme?token=你的网关密钥</code></li>
+      <li>建议将「每秒最大请求数」先设为 1~2，稳定后再按网关上游能力调高；「每次请求最大段落数」可设为 3~25；</li>
+      <li>点击「测试服务」，通过后把网页翻译服务切换为该自定义 API。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="m post">POST</span>/imme — 批量文本翻译</h2>
+    <div class="ep base-ep">POST {base}/imme</div>
+    <p class="desc">Content-Type: <code>application/json</code>。协议与沉浸式翻译官方「自定义接口翻译」文档一致。</p>
+    <table>
+      <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>text_list</code></td><td><span class="req">必填</span></td><td>待翻译文本字符串数组，≤ 100 条，总长 ≤ 50000 字符</td></tr>
+        <tr><td><code>target_lang</code></td><td><span class="req">必填</span></td><td>目标语言代码（如 <code>zh</code> / <code>en</code> / <code>zh-TW</code>）</td></tr>
+        <tr><td><code>source_lang</code></td><td><span class="opt">可选</span></td><td>源语言代码，<code>auto</code> 或省略为自动检测</td></tr>
+      </tbody>
+    </table>
+
+    <pre><span class="c"># curl 示例</span>
+curl -X POST "<span class="base-url-inline">https://your-gateway.example.com</span>/imme?token=YOUR_GATEWAY_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source_lang": "auto",
+    "target_lang": "zh",
+    "text_list": ["Hello, world!", "Good morning."]
+  }'<button class="copy" type="button">复制</button></pre>
+
+    <pre><span class="c">// 成功响应（200）— translations 与 text_list 等长同序</span>
+{
+  "translations": [
+    { "detected_source_lang": "en", "text": "你好，世界！" },
+    { "detected_source_lang": "en", "text": "早上好。" }
+  ]
+}<button class="copy" type="button">复制</button></pre>
+    <p class="note"><b>占位符说明：</b>沉浸式翻译会把网页中的表情、公式等非文本内容替换为 <code>{0}</code> <code>{1}</code> 形式的占位符后随文本传入，网关原样透传给上游并在响应中带回，由客户端还原。若某上游习惯性改写花括号内容导致还原失败，可在后台调整服务商优先级避开该上游。</p>
+  </section>
+
+  <section>
+    <h2>错误格式</h2>
+    <table>
+      <thead><tr><th>HTTP</th><th>body</th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td>400</td><td><code>{ "error": { "code": "validation_error", "message": "..." } }</code></td><td>参数缺失 / 非法（text_list、target_lang 等）</td></tr>
+        <tr><td>401</td><td><code>{ "error": { "code": "unauthorized" } }</code></td><td>token 缺失或错误（检查 URL 里的 token）</td></tr>
+        <tr><td>503</td><td><code>{ "error": { "code": "service_unavailable" } }</code></td><td>上游全部失败，请重试</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>常用语言代码</h2>
+    <table>
+      <thead><tr><th>语言</th><th>代码</th><th>语言</th><th>代码</th></tr></thead>
+      <tbody>
+        <tr><td>自动检测（仅源语言）</td><td>auto</td><td>中文（简体）</td><td>zh / zh-Hans</td></tr>
+        <tr><td>英语</td><td>en</td><td>中文（繁体）</td><td>zh-tw / zh-Hant</td></tr>
+        <tr><td>日语</td><td>ja / jp</td><td>粤语</td><td>yue</td></tr>
+        <tr><td>韩语</td><td>ko / kor</td><td>文言文</td><td>wyw</td></tr>
+        <tr><td>法语</td><td>fr / fra</td><td>德语</td><td>de</td></tr>
+        <tr><td>西班牙语</td><td>es / spa</td><td>俄语</td><td>ru</td></tr>
+        <tr><td>葡萄牙语</td><td>pt</td><td>意大利语</td><td>it</td></tr>
+        <tr><td>泰语</td><td>th</td><td>越南语</td><td>vi / vie</td></tr>
+        <tr><td>阿拉伯语</td><td>ar / ara</td><td>印尼语</td><td>id</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><b>方言码自动映射：</b>同一语言的多种写法（如 <code>zh</code> / <code>zh-Hans</code>、<code>ja</code> / <code>jp</code>）均可使用，网关自动转换为上游厂商的代码规范——简体中文→Azure <code>zh-Hans</code> / DeepL <code>ZH</code> / 百度 <code>zh</code>；繁体中文→Azure <code>zh-Hant</code> / DeepL <code>ZH-TW</code> / 百度 <code>cht</code>；文言文→Azure <code>lzh</code> / 百度 <code>wyw</code>。业务侧统一使用上表即可，无需关心各厂商差异。<b>注意：</b>DeepL 上游不支持粤语（yue）与文言文（wyw），目标语言为这两者且路由到 DeepL 时会返回上游错误。</p>
+  </section>
+
+  <footer>Transflux · 自定义 API 渠道文档 · 本页面由网关自动提供，管理员可在后台启用 / 禁用</footer>
+</div>
+
+<script>
+(function () {
+  var base = location.origin;
+  document.querySelectorAll('.base-url').forEach(function (el) { el.textContent = base; });
+  document.querySelectorAll('.base-url-inline').forEach(function (el) { el.textContent = base; });
+  document.querySelectorAll('.base-ep').forEach(function (el) {
+    el.textContent = el.textContent.replace('{base}', base);
+  });
+  document.querySelectorAll('pre').forEach(function (pre) {
+    pre.querySelectorAll('.copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var clone = pre.cloneNode(true);
+        clone.querySelectorAll('.copy').forEach(function (b) { b.remove(); });
+        var text = (clone.textContent || '').trim();
+        var done = function () { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+        } else { fallback(text, done); }
+      });
+    });
+  });
+  function fallback(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    ta.remove();
+  }
+})();
+</script>
+</body>
+</html>

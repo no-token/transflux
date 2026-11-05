@@ -1,0 +1,20 @@
+# Transflux —— 单机编排
+# 用法：
+#   cp .env.example .env   # 按需改 PORT / CORS_ORIGINS / MASTER_KEY
+#   docker compose up -d
+# 数据持久化：./data 挂载为容器 /app/data（数据库 + 密钥主密钥），备份该目录即可
+services:
+  gateway:
+    image: ghcr.io/no-token/transflux:latest
+    container_name: transflux
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"          # 对外暴露的 HTTP 端口
+    env_file:
+      - .env                           # 部署级配置（PORT/CORS_ORIGINS/MASTER_KEY/AUTH_KEY）
+    environment:
+      PORT: 3000                       # 容器内固定监听 3000，对外端口由上面映射决定
+      DB_PATH: /app/data/usage.sqlite
+    volumes:
+      - ./data:/app/data
+    # 健康检查内置于 Dockerfile；生产建议前面再放一层 nginx/caddy 反代做 TLS

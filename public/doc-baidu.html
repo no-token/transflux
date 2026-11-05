@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>百度翻译渠道 · Transflux接口文档</title>
+<style>
+  :root {
+    --brand: #2932e1; --brand-soft: #eceffc;
+    --text: #1f2430; --muted: #6b7280; --border: #e5e8ef;
+    --bg: #f6f8fb; --card: #ffffff; --code-bg: #101426; --code-tx: #dbe4f5;
+    --ok: #0a8a4a; --bad: #c23b3b; --mono: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; font-size: 14.5px; line-height: 1.7; }
+  .page { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
+  .hero { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .logo { width: 42px; height: 42px; border-radius: 10px; background: var(--brand); display: flex; align-items: center; justify-content: center; flex: none; }
+  .logo svg { width: 22px; height: 22px; fill: #fff; }
+  h1 { font-size: 21px; margin: 0; }
+  .tagline { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .pill { display: inline-block; font-size: 11.5px; font-weight: 600; color: var(--brand); background: var(--brand-soft);
+    border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent); padding: 2px 10px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
+  .meta { color: var(--muted); font-size: 12.5px; margin: 14px 0 26px; padding: 10px 14px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; }
+  .meta code { font-family: var(--mono); font-size: 12px; }
+  section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px 16px; margin-bottom: 16px; }
+  h2 { font-size: 15.5px; margin: 0 0 10px; display: flex; align-items: center; gap: 9px; }
+  .m { font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: .5px; }
+  .m.post { background: #e3f4ea; color: var(--ok); }
+  .m.get  { background: var(--brand-soft); color: var(--brand); }
+  p.desc { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .ep { font-family: var(--mono); font-size: 12.5px; background: var(--brand-soft); border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+    border-radius: 8px; padding: 9px 12px; word-break: break-all; color: #2a2f8f; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+  th { text-align: left; color: var(--muted); font-size: 12px; font-weight: 600; padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 7px 10px; border-bottom: 1px solid #f0f2f6; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  code { font-family: var(--mono); font-size: 12px; background: #f1f3f8; border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; white-space: nowrap; }
+  .req { color: var(--bad); font-size: 11px; font-weight: 600; }
+  .opt { color: var(--muted); font-size: 11px; }
+  pre { position: relative; background: var(--code-bg); color: var(--code-tx); font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+    border-radius: 10px; padding: 14px 16px; overflow-x: auto; white-space: pre; margin: 12px 0 0; }
+  pre .c { color: #7d8db8; }
+  .copy { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 4px 10px; border-radius: 7px; cursor: pointer;
+    background: rgba(255,255,255,.12); color: #d5ddf2; border: 1px solid rgba(255,255,255,.18); }
+  .copy:hover { background: rgba(255,255,255,.22); }
+  .note { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .note b { color: var(--text); }
+  footer { text-align: center; color: #9aa3b0; font-size: 12px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M9.154 0C7.71 0 6.54 1.658 6.54 3.707c0 2.051 1.171 3.71 2.615 3.71 1.446 0 2.614-1.659 2.614-3.71C11.768 1.658 10.6 0 9.154 0zm7.025.594C14.86.58 13.347 2.589 13.2 3.927c-.187 1.745.25 3.487 2.179 3.735 1.933.25 3.175-1.806 3.422-3.364.252-1.555-.995-3.364-2.362-3.674a1.218 1.218 0 0 0-.261-.03zM3.582 5.535a2.811 2.811 0 0 0-.156.008c-2.118.19-2.428 3.24-2.428 3.24-.287 1.41.686 4.425 3.297 3.864 2.617-.561 2.262-3.68 2.183-4.362-.125-1.018-1.292-2.773-2.896-2.75zm16.534 1.753c-2.308 0-2.617 2.119-2.617 3.616 0 1.43.121 3.425 2.988 3.362 2.867-.063 2.553-3.238 2.553-3.988 0-.745-.62-2.99-2.924-2.99zm-8.264 2.478c-1.424.014-2.708.925-3.323 1.947-1.118 1.868-2.863 3.05-3.112 3.363-.25.309-3.61 2.116-2.864 5.42.746 3.301 3.365 3.237 3.365 3.237s1.93.19 4.171-.31c2.24-.495 4.17.123 4.17.123s5.233 1.748 6.665-1.616c1.43-3.364-.808-5.109-.808-5.109s-2.99-2.306-4.736-4.798c-1.072-1.665-2.348-2.268-3.528-2.257zm-2.234 3.84l1.542.024v8.197H7.758c-1.47-.291-2.055-1.292-2.13-1.462-.072-.173-.488-.976-.268-2.343.635-2.049 2.447-2.196 2.447-2.196h1.81zm3.964 2.39v3.881c.096.413.612.488.612.488h1.614v-4.343h1.689v5.782h-3.915c-1.517-.39-1.59-1.465-1.59-1.465v-4.317zm-5.458 1.147c-.66.197-.978.708-1.05.928-.076.22-.247.78-.1 1.269.294 1.095 1.248 1.144 1.248 1.144h1.37v-3.34z"/></svg></div>
+    <div>
+      <h1>Transflux · 百度翻译渠道接口文档<span class="pill">百度通用翻译兼容</span></h1>
+      <div class="tagline">入参与响应同百度翻译开放平台「通用文本翻译」，已有百度 SDK / 代码可直接换地址接入</div>
+    </div>
+  </div>
+
+  <div class="meta">
+    本服务 Base URL：<code class="base-url">https://your-gateway.example.com</code>（即当前页面的访问地址）<br />
+    鉴权凭据：<code>appid</code> 填任意非空字符串（如 <code>gateway</code>）；<b>密钥</b> 填网关管理员发放的网关对外 AUTH_KEY。
+  </div>
+
+  <section>
+    <h2><span class="m post">POST</span>/baidu/api/trans/vip/translate — 通用文本翻译</h2>
+    <div class="ep base-ep">POST {base}/baidu/api/trans/vip/translate</div>
+    <p class="desc">同时支持 <code>POST</code>（推荐，form 表单或 JSON）与 <code>GET</code>（query 参数）。多行文本在 <code>q</code> 内用 <code>\n</code> 分隔，响应逐行对应。</p>
+    <table>
+      <thead><tr><th>参数</th><th>必填</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>q</code></td><td><span class="req">必填</span></td><td>请求翻译文本（UTF-8），≤ 6000 字符；<code>\n</code> 分隔多行</td></tr>
+        <tr><td><code>from</code></td><td><span class="opt">可选</span></td><td>源语言，<code>auto</code> 或留空为自动检测</td></tr>
+        <tr><td><code>to</code></td><td><span class="req">必填</span></td><td>目标语言（见下方语言代码表）</td></tr>
+        <tr><td><code>appid</code></td><td><span class="req">必填</span></td><td>任意非空字符串即可（网关以密钥鉴别身份）</td></tr>
+        <tr><td><code>salt</code></td><td><span class="req">必填</span></td><td>随机数（数字或字符串均可）</td></tr>
+        <tr><td><code>sign</code></td><td><span class="req">必填</span></td><td>签名，见下方生成方法</td></tr>
+      </tbody>
+    </table>
+
+    <h2 style="margin-top:18px"><span class="m get">SIGN</span>签名生成方法</h2>
+    <p class="desc">将 <code>appid + q + salt + 密钥</code> 按顺序拼接后计算 MD5，取 32 位小写十六进制即为 <code>sign</code>（与百度官方规则一致，q 为未 URL 编码的 UTF-8 原文）。</p>
+    <pre><span class="c"># 签名示例</span>
+sign = MD5( appid + q + salt + 密钥 ).hexdigest()   <span class="c"># 32 位小写</span><button class="copy" type="button">复制</button></pre>
+
+    <pre><span class="c"># curl 示例</span>
+curl -X POST "<span class="base-url-inline">https://your-gateway.example.com</span>/baidu/api/trans/vip/translate" \
+  --data-urlencode "q=Hello, world!" \
+  -d "from=en&amp;to=zh&amp;appid=gateway&amp;salt=1435660288" \
+  -d "sign=$(echo -n "gatewayHello, world!1435660288YOUR_GATEWAY_KEY" | md5sum | cut -d' ' -f1)"<button class="copy" type="button">复制</button></pre>
+
+    <pre><span class="c"># Python 示例</span>
+import hashlib, requests, random, uuid
+
+APP_ID = "gateway"            <span class="c"># 任意非空字符串</span>
+SECRET = "YOUR_GATEWAY_KEY"   <span class="c"># 网关对外密钥</span>
+BASE   = "<span class="base-url-inline">https://your-gateway.example.com</span>/baidu/api/trans/vip/translate"
+
+q, salt = "Hello, world!", str(random.randint(1, 10**9))
+sign = hashlib.md5((APP_ID + q + salt + SECRET).encode("utf-8")).hexdigest()
+r = requests.post(BASE, data={ "q": q, "from": "en", "to": "zh",
+                               "appid": APP_ID, "salt": salt, "sign": sign })
+print(r.json())<button class="copy" type="button">复制</button></pre>
+
+    <pre><span class="c">// Node.js 示例</span>
+const crypto = require("crypto");
+const APP_ID = "gateway", SECRET = "YOUR_GATEWAY_KEY";
+const BASE = "<span class="base-url-inline">https://your-gateway.example.com</span>/baidu/api/trans/vip/translate";
+
+const q = "Hello, world!", salt = String(Date.now());
+const sign = crypto.createHash("md5")
+  .update(APP_ID + q + salt + SECRET, "utf8").digest("hex");
+
+const resp = await fetch(BASE, {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body: new URLSearchParams({ q, from: "en", to: "zh", appid: APP_ID, salt, sign }),
+});
+const data = await resp.json();<button class="copy" type="button">复制</button></pre>
+
+    <pre><span class="c">// 成功响应（200）— 与百度通用翻译结构一致</span>
+{
+  "from": "en",
+  "to": "zh",
+  "trans_result": [
+    { "src": "Hello, world!", "dst": "你好，世界！" }
+  ]
+}<button class="copy" type="button">复制</button></pre>
+    <p class="note"><b>路由说明：</b>百度渠道仅是接入风格，实际翻译由网关按优先级 + 剩余额度在多家上游中自动路由，无需百度账号。</p>
+  </section>
+
+  <section>
+    <h2>错误格式</h2>
+    <p class="desc">与百度一致：HTTP 200 + <code>{ "error_code": "&lt;码&gt;", "error_msg": "..." }</code></p>
+    <table>
+      <thead><tr><th>error_code</th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td>52002</td><td>系统错误（网关上游全部不可用，请重试）</td></tr>
+        <tr><td>54000</td><td>必填参数为空（q / to / appid / salt / sign）</td></tr>
+        <tr><td>54001</td><td>签名错误（检查 sign 拼接顺序与密钥）</td></tr>
+        <tr><td>58003</td><td>q 长度超限（≤ 6000 字符）</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>常用语言代码</h2>
+    <table>
+      <thead><tr><th>语言</th><th>代码</th><th>语言</th><th>代码</th></tr></thead>
+      <tbody>
+        <tr><td>自动检测（仅 from）</td><td>auto</td><td>中文（简体）</td><td>zh / zh-Hans</td></tr>
+        <tr><td>英语</td><td>en</td><td>中文（繁体）</td><td>zh-tw / zh-Hant / cht</td></tr>
+        <tr><td>日语</td><td>ja / jp</td><td>粤语</td><td>yue</td></tr>
+        <tr><td>韩语</td><td>ko / kor</td><td>文言文</td><td>wyw</td></tr>
+        <tr><td>法语</td><td>fr / fra</td><td>德语</td><td>de</td></tr>
+        <tr><td>西班牙语</td><td>es / spa</td><td>俄语</td><td>ru</td></tr>
+        <tr><td>葡萄牙语</td><td>pt</td><td>意大利语</td><td>it</td></tr>
+        <tr><td>泰语</td><td>th</td><td>越南语</td><td>vi / vie</td></tr>
+        <tr><td>阿拉伯语</td><td>ar / ara</td><td>印尼语</td><td>id</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><b>方言码自动映射：</b>同一语言的多种写法均可使用——百度风格（<code>jp</code> / <code>kor</code> / <code>fra</code> / <code>spa</code> / <code>cht</code>）与 ISO 风格（<code>ja</code> / <code>ko</code> / <code>fr</code> / <code>es</code> / <code>zh-Hant</code>）等价，网关按路由到的上游自动转换代码规范，业务侧统一使用上表即可。</p>
+  </section>
+
+  <footer>Transflux · 百度翻译渠道文档 · 本页面由网关自动提供，管理员可在后台启用 / 禁用</footer>
+</div>
+
+<script>
+(function () {
+  var base = location.origin;
+  document.querySelectorAll('.base-url').forEach(function (el) { el.textContent = base; });
+  document.querySelectorAll('.base-url-inline').forEach(function (el) { el.textContent = base; });
+  document.querySelectorAll('.base-ep').forEach(function (el) {
+    el.textContent = el.textContent.replace('{base}', base);
+  });
+  document.querySelectorAll('pre').forEach(function (pre) {
+    pre.querySelectorAll('.copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var clone = pre.cloneNode(true);
+        clone.querySelectorAll('.copy').forEach(function (b) { b.remove(); });
+        var text = (clone.textContent || '').trim();
+        var done = function () { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制'; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+        } else { fallback(text, done); }
+      });
+    });
+  });
+  function fallback(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    ta.remove();
+  }
+})();
+</script>
+</body>
+</html>
