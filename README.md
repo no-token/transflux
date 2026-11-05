@@ -30,7 +30,23 @@ docker run -d --name transflux \
 1. 打开 `http://服务器IP:3000/admin`，默认 `admin / admin123`，**首次登录强制改密**
 2. 「服务商」填入各上游 API 密钥，「系统设置」修改网关密钥
 
-- **升级 / 回滚**：`docker pull` 拉取目标版本（如 `:1.0.0`），删除旧容器后重新执行上面的启动命令
+- **升级 / 回滚**：换镜像 tag 后完整重跑即可（数据在挂载目录里，不受影响）：
+
+  ```bash
+  # 1. 拉取目标版本（升级用 :latest，回滚把 tag 换成旧版本号如 :1.0.0）
+  docker pull ghcr.io/no-token/transflux:latest
+
+  # 2. 删除旧容器
+  docker rm -f transflux
+
+  # 3. 重新启动（与首次部署的启动命令相同）
+  docker run -d --name transflux \
+    -p 3000:3000 \
+    -v /opt/transflux/data:/app/data \
+    -e CORS_ORIGINS=https://your-app.example.com \
+    --restart unless-stopped \
+    ghcr.io/no-token/transflux:latest
+  ```
 - **生产 TLS**：前置 nginx 反代（示例）：
 
   ```nginx
